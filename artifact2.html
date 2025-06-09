@@ -1,1 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Artifact 2 Enhancement – Algorithms and Data Structures</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
 
+    <header>
+      <h1>Artifact 2 Enhancement: Algorithms and Data Structures</h1>
+      <a href="index.html">&larr; Back to Home</a>
+    </header>
+
+    <section>
+      <h2>Search Feature Enhancement</h2>
+      <div>
+        <img src="files/artifact2-screenshot.png" alt="Appointment Manager Search Function">
+      </div>
+      <p>
+        This enhancement highlights the integration of a search algorithm into the Appointment Management System, allowing users to filter appointments by name or date. In addition to the algorithmic feature, the graphical interface was modernized with improved fonts, layout, and color palette to enhance usability and visual clarity. This update demonstrates my growth in implementing algorithmic logic within real world interfaces.
+      </p>
+    </section>
+
+    <section>
+      <h2>Code for AppointmentManagerGUI.java</h2>
+      <pre><code>import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
+
+public class AppointmentManagerGUI {
+
+    private JFrame frame;
+    private DefaultListModel&lt;String&gt; appointmentListModel;
+    private JList&lt;String&gt; appointmentList;
+    private JTextField nameField, dateField, timeField, notesField;
+    private JTextField searchField;
+    private JComboBox&lt;String&gt; searchTypeBox;
+
+    private ArrayList&lt;Appointment&gt; appointments;
+
+    public AppointmentManagerGUI() {
+        appointments = new ArrayList&lt;&gt;();
+
+        frame = new JFrame("Appointment Manager");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(800, 600);
+        frame.setLayout(new BorderLayout());
+
+        // font and color upgrade
+        Font labelFont = new Font("SansSerif", Font.BOLD, 14);
+        Font fieldFont = new Font("SansSerif", Font.PLAIN, 13);
+        Color backgroundColor = new Color(245, 245, 245);
+        Color panelColor = new Color(220, 235, 245);
+        Color buttonColor = new Color(100, 149, 237);
+
+        // list panel
+        appointmentListModel = new DefaultListModel&lt;&gt;();
+        appointmentList = new JList&lt;&gt;(appointmentListModel);
+        appointmentList.setFont(fieldFont);
+        JScrollPane listScrollPane = new JScrollPane(appointmentList);
+        frame.add(listScrollPane, BorderLayout.CENTER);
+
+        // input panel
+        JPanel inputPanel = new JPanel(new GridLayout(5, 2, 5, 5));
+        inputPanel.setBorder(BorderFactory.createTitledBorder("Add New Appointment"));
+        inputPanel.setBackground(panelColor);
+
+        JLabel nameLabel = new JLabel("Name:");
+        nameLabel.setFont(labelFont);
+        inputPanel.add(nameLabel);
+        nameField = new JTextField();
+        nameField.setFont(fieldFont);
+        inputPanel.add(nameField);
+
+        JLabel dateLabel = new JLabel("Date (YYYY-MM-DD):");
+        dateLabel.setFont(labelFont);
+        inputPanel.add(dateLabel);
+        dateField = new JTextField();
+        dateField.setFont(fieldFont);
+        inputPanel.add(dateField);
+
+        JLabel timeLabel = new JLabel("Time (HH:MM):");
+        timeLabel.setFont(labelFont);
+        inputPanel.add(timeLabel);
+        timeField = new JTextField();
+        timeField.setFont(fieldFont);
+        inputPanel.add(timeField);
+
+        JLabel notesLabel = new JLabel("Notes:");
+        notesLabel.setFont(labelFont);
+        inputPanel.add(notesLabel);
+        notesField = new JTextField();
+        notesField.setFont(fieldFont);
+        inputPanel.add(notesField);
+
+        frame.add(inputPanel, BorderLayout.NORTH);
+
+        // button panel
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setBackground(backgroundColor);
+
+        JButton addButton = new JButton("Add");
+        addButton.setFont(labelFont);
+        addButton.setBackground(buttonColor);
+        addButton.setForeground(Color.WHITE);
+        buttonPanel.add(addButton);
+
+        JButton deleteButton = new JButton("Delete");
+        deleteButton.setFont(labelFont);
+        deleteButton.setBackground(buttonColor);
+        deleteButton.setForeground(Color.WHITE);
+        buttonPanel.add(deleteButton);
+
+        frame.add(buttonPanel, BorderLayout.SOUTH);
+
+        // search panel
+        JPanel searchPanel = new JPanel();
+        searchPanel.setBackground(panelColor);
+        searchPanel.setBorder(BorderFactory.createTitledBorder("Search Appointments"));
+
+        JLabel searchLabel = new JLabel("Search:");
+        searchLabel.setFont(labelFont);
+        searchPanel.add(searchLabel);
+
+        searchField = new JTextField(10);
+        searchField.setFont(fieldFont);
+        searchPanel.add(searchField);
+
+        searchTypeBox = new JComboBox&lt;&gt;(new String[]{"Name", "Date"});
+        searchTypeBox.setFont(fieldFont);
+        searchPanel.add(searchTypeBox);
+
+        JButton searchButton = new JButton("Search");
+        searchButton.setFont(labelFont);
+        searchButton.setBackground(buttonColor);
+        searchButton.setForeground(Color.WHITE);
+        searchPanel.add(searchButton);
+
+        frame.add(searchPanel, BorderLayout.WEST);
+
+        // event listeners
+        addButton.addActionListener(e -&gt; addAppointment());
+        deleteButton.addActionListener(e -&gt; deleteAppointment());
+        searchButton.addActionListener(e -&gt; searchAppointments());
+
+        frame.getContentPane().setBackground(backgroundColor);
+        frame.setVisible(true);
+    }
+
+    private void addAppointment() {
+        String name = nameField.getText();
+        String date = dateField.getText();
+        String time = timeField.getText();
+        String notes = notesField.getText();
+
+        if (!name.isEmpty() && !date.isEmpty() && !time.isEmpty()) {
+            Appointment appointment = new Appointment(name, date, time, notes);
+            appointments.add(appointment);
+            appointmentListModel.addElement(appointment.toString());
+            clearFields();
+        } else {
+            JOptionPane.showMessageDialog(frame, "Please fill in all required fields");
+        }
+    }
+
+    private void deleteAppointment() {
+        int selectedIndex = appointmentList.getSelectedIndex();
+        if (selectedIndex != -1) {
+            appointments.remove(selectedIndex);
+            appointmentListModel.remove(selectedIndex);
+        }
+    }
+
+    private void clearFields() {
+        nameField.setText("");
+        dateField.setText("");
+        timeField.setText("");
+        notesField.setText("");
+    }
+
+    private void searchAppointments() {
+        String searchTerm = searchField.getText().trim().toLowerCase();
+        String searchType = (String) searchTypeBox.getSelectedItem();
+        StringBuilder results = new StringBuilder();
+        boolean found = false;
+
+        for (Appointment appt : appointments) {
+            if ("Name".equals(searchType) && appt.getName().toLowerCase().contains(searchTerm)) {
+                results.append(appt.toString()).append("\n");
+                found = true;
+            } else if ("Date".equals(searchType) && appt.getDate().toLowerCase().contains(searchTerm)) {
+                results.append(appt.toString()).append("\n");
+                found = true;
+            }
+        }
+
+        if (found) {
+            JOptionPane.showMessageDialog(frame, results.toString(), "Search Results", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(frame, "No matching appointments found.");
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -&gt; new AppointmentManagerGUI());
+    }
+}
+</code></pre>
+    </section>
+
+    <section>
+      <h2>Artifact Narrative</h2>
+      <p><strong>Briefly describe the artifact. What is it? When was it created?</strong></p>
+      <p>The artifact is an appointment management system that I created in CS-320, software testing automation and quality assurance. I created it for a project for that class, and it is a terminal based java application that allows users to add, view, and delete appointments.</p>
+
+      <p><strong>Why did you include this in your ePortfolio? What does it showcase?</strong></p>
+      <p>I chose this artifact for this part of this project because it shows my skills in algorithms as well as how to focus on user enhancements in a project. This enhancement focused on the algorithm and structure by adding a search functionality. This allows users to search for an appointment based on name or date. The artifact is improved by adding this feature as it will be more intuitive for the user with the search bar clearly labeled and easy to use and will provide a fast way to look up information, which may be necessary if there are a lot of appointments stored in the data base, I plan to create next.</p>
+
+      <p><strong>Did you meet the course outcomes you planned to meet? Any updates?</strong></p>
+      <p>Yes, I believe I met the outcomes I intended to achieve. I showed my ability to design and evaluate computing solutions using algorithmic principles by adding the search bar functionality to the program. I also made effective design decisions regarding placement and font choice for the search bar. This enhancement has no significant changes planned, but based on feedback the font may be changed, or I may look to incorporate a dark mode which means the color of the font will also need to change.</p>
+
+      <p><strong>What did you learn during this enhancement? What were the challenges?</strong></p>
+      <p>One of the key challenges I faced during this part of the project was figuring out how to make sure that the search algorithm interacted well with the GUI and swift language. I also had file placement issues, so I restructured the file layout and added a clear /src/java and /src/test directory. Overall this artifact enhancement helped with my algorithm implementation skills and my understanding of how to incorporate it with a working GUI.</p>
+    </section>
+
+    <section>
+      <h2>Project Files</h2>
+      <p><strong>Full Source Code:</strong> <a href="files/artifact2-code.zip">Download Source Code</a></p>
+      <p><strong>Artifact Narrative:</strong> <a href="files/Artifact2_Narrative.docx">Download Word Document</a></p>
+      <p><strong>Original Code Repository:</strong> <a href="https://github.com/ally-miller/Software-Test-Automation-and-QA" target="_blank">View on GitHub</a></p>
+      <p><strong>Original Code Review:</strong> <a href="code-review.html">View Code Review</a></p>
+    </section>
+
+    <footer>
+      <p>Ally Miller 2025</p>
+    </footer>
+  </main>
+</body>
+</html>
