@@ -57,11 +57,15 @@ section {
 }
 
 section h2 {
-  border-bottom: 2px solid #3c8dbc;
-  padding-bottom: 5px;
-  margin-bottom: 15px;
+  border-bottom: 3px solid #3c8dbc;
+  padding-bottom: 10px;
+  margin-bottom: 25px;
   color: #2c3e50;
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
+
 
 img {
   display: block;
