@@ -19,13 +19,68 @@
   </section>
   
   <section>
+    <h2>Project Files</h2>
     <p><strong>Download Full Source Code:</strong> <a href="files/artifact1-code.zip">artifact1-code.zip</a></p>
     <p><strong>Enhancement Narrative:</strong> <a href="files/software-narrative.docx">Download Word Document</a></p>
-    <p><strong>Code Review:</strong> <a href="code-review.html">View Unified Code Review</a></p>
+    <p><strong>Code Review:</strong> <a href="code-review.html">Code Review</a></p>
+  </section>
+
+  <section>
+    <h2>Sample GUI Code (AppointmentManagerGUI.java)</h2>
+    <pre><code>import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
+
+public class AppointmentManagerGUI {
+
+    private JFrame frame;
+    private DefaultListModel&lt;String&gt; appointmentListModel;
+    private JList&lt;String&gt; appointmentList;
+    private JTextField nameField, dateField, timeField, notesField;
+
+    private ArrayList&lt;Appointment&gt; appointments;
+
+    public AppointmentManagerGUI() {
+        appointments = new ArrayList&lt;&gt;();
+
+        frame = new JFrame("Appointment Manager");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(600, 400);
+        frame.setLayout(new BorderLayout());
+
+        // list panel
+        appointmentListModel = new DefaultListModel&lt;&gt;();
+        appointmentList = new JList&lt;&gt;(appointmentListModel);
+        JScrollPane listScrollPane = new JScrollPane(appointmentList);
+        frame.add(listScrollPane, BorderLayout.CENTER);
+
+        // input panel
+        JPanel inputPanel = new JPanel(new GridLayout(5, 2));
+        inputPanel.add(new JLabel("Name:"));
+        nameField = new JTextField();
+        inputPanel.add(nameField);
+
+        inputPanel.add(new JLabel("Date (YYYY-MM-DD):"));
+        dateField = new JTextField();
+        inputPanel.add(dateField);
+
+        inputPanel.add(new JLabel("Time (HH:MM):"));
+        timeField = new JTextField();
+        inputPanel.add(timeField);
+
+        inputPanel.add(new JLabel("Notes:"));
+        notesField = new JTextField();
+        inputPanel.add(notesField);
+
+        frame.add(inputPanel, BorderLayout.NORTH);
+        frame.setVisible(true);
+    }
+}
+</code></pre>
   </section>
 
   <footer>
-    <p>© 2025 Ally Miller</p>
+    <p>Ally Miller 2025</p>
   </footer>
 </body>
 </html>
