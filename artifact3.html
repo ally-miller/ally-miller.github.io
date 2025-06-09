@@ -1,1 +1,414 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Artifact 3 Enhancement – Databases</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
 
+    <header>
+      <h1>Artifact 3 Enhancement: Databases</h1>
+      <a href="index.html">&larr; Back to Home</a>
+    </header>
+
+    <section>
+      <h2>Database Integration</h2>
+      <div>
+        <video width="640" height="360" controls>
+          <source src="files/artifact3_demo.mp4" type="video/mp4">
+        </video>
+      </div>
+      <p>
+        This enhancement introduces a database integration into the Appointment Management System using SQLite. The project now includes persistent storage for appointments, modular architecture for UI and backend logic, and improved GUI usability. This demonstrates my ability to implement full-stack features in a desktop application environment.
+      </p>
+    </section>
+
+    <section>
+      <h2>Code for AppointmentManagerGUI.java</h2>
+      <pre><code>/import javax.swing.*;
+import java.awt.*;
+import java.util.List;
+
+public class AppointmentManagerGUI {
+
+    private JFrame frame;
+    private DefaultListModel<String> appointmentListModel;
+    private JList<String> appointmentList;
+    private JTextField nameField, dateField, timeField, notesField;
+    private JTextField searchField;
+    private JComboBox<String> searchTypeBox;
+
+    private List<DatabaseAppointment> currentAppointments;
+    private int selectedAppointmentId = -1;
+
+    public AppointmentManagerGUI() {
+        DatabaseHelper.initializeDatabase();
+        currentAppointments = DatabaseHelper.getAppointments();
+
+        frame = new JFrame("Appointment Manager");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(800, 600);
+        frame.setLayout(new BorderLayout());
+
+        Font labelFont = new Font("SansSerif", Font.BOLD, 14);
+        Font fieldFont = new Font("SansSerif", Font.PLAIN, 13);
+        Color panelColor = new Color(220, 235, 245);
+
+        // Search panel
+        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        searchField = new JTextField(20);
+        searchField.setFont(fieldFont);
+        searchTypeBox = new JComboBox<>(new String[]{"Name", "Date"});
+        searchTypeBox.setFont(fieldFont);
+        JButton searchButton = new JButton("Search");
+        searchButton.setFont(labelFont);
+        searchButton.addActionListener(e -> {
+            String term = searchField.getText().trim().toLowerCase();
+            String type = (String) searchTypeBox.getSelectedItem();
+            if (!term.isEmpty()) {
+                filterAppointments(term, type);
+            } else {
+                loadAppointments();
+            }
+        });
+
+        searchPanel.add(new JLabel("Search:"));
+        searchPanel.add(searchField);
+        searchPanel.add(searchTypeBox);
+        searchPanel.add(searchButton);
+        frame.add(searchPanel, BorderLayout.SOUTH);
+
+        JPanel inputPanel = new JPanel(new GridLayout(7, 2, 10, 10));
+        inputPanel.setBackground(panelColor);
+        inputPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        JLabel nameLabel = new JLabel("Name:");
+        nameLabel.setFont(labelFont);
+        nameField = new JTextField();
+        nameField.setFont(fieldFont);
+
+        JLabel dateLabel = new JLabel("Date (YYYY-MM-DD):");
+        dateLabel.setFont(labelFont);
+        dateField = new JTextField();
+        dateField.setFont(fieldFont);
+
+        JLabel timeLabel = new JLabel("Time (HH:MM):");
+        timeLabel.setFont(labelFont);
+        timeField = new JTextField();
+        timeField.setFont(fieldFont);
+
+        JLabel notesLabel = new JLabel("Notes:");
+        notesLabel.setFont(labelFont);
+        notesField = new JTextField();
+        notesField.setFont(fieldFont);
+
+        JButton addButton = new JButton("Add Appointment");
+        addButton.setFont(labelFont);
+        addButton.addActionListener(e -> {
+            String name = nameField.getText().trim();
+            String date = dateField.getText().trim();
+            String time = timeField.getText().trim();
+            String notes = notesField.getText().trim();
+
+            if (!name.isEmpty() && !date.isEmpty() && !time.isEmpty()) {
+                DatabaseHelper.insertAppointment(name, date, time, notes);
+                JOptionPane.showMessageDialog(frame, "Appointment added.");
+                clearFields();
+                loadAppointments();
+            } else {
+                JOptionPane.showMessageDialog(frame, "Please fill in name, date, and time.");
+            }
+        });
+
+        JButton deleteButton = new JButton("Delete Selected Appointment");
+        deleteButton.setFont(labelFont);
+        deleteButton.addActionListener(e -> {
+            int index = appointmentList.getSelectedIndex();
+            if (index >= 0 && index < currentAppointments.size()) {
+                int idToDelete = currentAppointments.get(index).getId();
+                DatabaseHelper.deleteAppointment(idToDelete);
+                JOptionPane.showMessageDialog(frame, "Appointment deleted.");
+                clearFields();
+                loadAppointments();
+            } else {
+                JOptionPane.showMessageDialog(frame, "Select an appointment to delete.");
+            }
+        });
+
+        JButton updateButton = new JButton("Update Selected Appointment");
+        updateButton.setFont(labelFont);
+        updateButton.addActionListener(e -> {
+            if (selectedAppointmentId == -1) {
+                JOptionPane.showMessageDialog(frame, "No appointment selected.");
+                return;
+            }
+
+            String name = nameField.getText().trim();
+            String date = dateField.getText().trim();
+            String time = timeField.getText().trim();
+            String notes = notesField.getText().trim();
+
+            if (!name.isEmpty() && !date.isEmpty() && !time.isEmpty()) {
+                DatabaseHelper.updateAppointment(selectedAppointmentId, name, date, time, notes);
+                JOptionPane.showMessageDialog(frame, "Appointment updated.");
+                clearFields();
+                loadAppointments();
+                selectedAppointmentId = -1;
+            } else {
+                JOptionPane.showMessageDialog(frame, "Please fill in all fields.");
+            }
+        });
+
+        inputPanel.add(nameLabel);
+        inputPanel.add(nameField);
+        inputPanel.add(dateLabel);
+        inputPanel.add(dateField);
+        inputPanel.add(timeLabel);
+        inputPanel.add(timeField);
+        inputPanel.add(notesLabel);
+        inputPanel.add(notesField);
+        inputPanel.add(addButton);
+        inputPanel.add(deleteButton);
+        inputPanel.add(updateButton);
+        frame.add(inputPanel, BorderLayout.NORTH);
+
+        appointmentListModel = new DefaultListModel<>();
+        appointmentList = new JList<>(appointmentListModel);
+        appointmentList.addListSelectionListener(e -> {
+            int index = appointmentList.getSelectedIndex();
+            if (index >= 0 && index < currentAppointments.size()) {
+                DatabaseAppointment appt = currentAppointments.get(index);
+                nameField.setText(appt.getName());
+                dateField.setText(appt.getDate());
+                timeField.setText(appt.getTime());
+                notesField.setText(appt.getNotes());
+                selectedAppointmentId = appt.getId();
+            }
+        });
+
+        frame.add(new JScrollPane(appointmentList), BorderLayout.CENTER);
+        loadAppointments();
+        frame.setVisible(true);
+    }
+
+    private void loadAppointments() {
+        appointmentListModel.clear();
+        currentAppointments = DatabaseHelper.getAppointments();
+        for (DatabaseAppointment appt : currentAppointments) {
+            appointmentListModel.addElement(appt.toString());
+        }
+    }
+
+    private void filterAppointments(String term, String type) {
+        appointmentListModel.clear();
+        currentAppointments = DatabaseHelper.getAppointments();
+
+        for (DatabaseAppointment appt : currentAppointments) {
+            if (type.equals("Name") && appt.getName().toLowerCase().contains(term)) {
+                appointmentListModel.addElement(appt.toString());
+            } else if (type.equals("Date") && appt.getDate().toLowerCase().contains(term)) {
+                appointmentListModel.addElement(appt.toString());
+            }
+        }
+    }
+
+    private void clearFields() {
+        nameField.setText("");
+        dateField.setText("");
+        timeField.setText("");
+        notesField.setText("");
+        selectedAppointmentId = -1;
+    }
+
+    public static void main(String[] args) {
+        new AppointmentManagerGUI();
+    }
+}</code></pre>
+    </section>
+
+    <section>
+      <h2>Code for DatabaseHelper.java</h2>
+      <pre><code>import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class DatabaseHelper {
+
+    private static final String URL = "jdbc:sqlite:appointments.db";
+
+    public static Connection connect() {
+        try {
+            return DriverManager.getConnection(URL);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static void initializeDatabase() {
+        String sql = """
+            CREATE TABLE IF NOT EXISTS appointments (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                date TEXT NOT NULL,
+                time TEXT NOT NULL,
+                notes TEXT
+            );
+        """;
+
+        try (Connection conn = connect();
+             Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void insertAppointment(String name, String date, String time, String notes) {
+        String sql = "INSERT INTO appointments (name, date, time, notes) VALUES (?, ?, ?, ?)";
+
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, name);
+            pstmt.setString(2, date);
+            pstmt.setString(3, time);
+            pstmt.setString(4, notes);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static List<DatabaseAppointment> getAppointments() {
+        List<DatabaseAppointment> appointments = new ArrayList<>();
+        String sql = "SELECT * FROM appointments ORDER BY date, time";
+
+        try (Connection conn = connect();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                appointments.add(new DatabaseAppointment(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("date"),
+                        rs.getString("time"),
+                        rs.getString("notes")
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return appointments;
+    }
+
+    public static void deleteAppointment(int id) {
+        String sql = "DELETE FROM appointments WHERE id = ?";
+
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void updateAppointment(int id, String name, String date, String time, String notes) {
+        String sql = "UPDATE appointments SET name = ?, date = ?, time = ?, notes = ? WHERE id = ?";
+
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, name);
+            pstmt.setString(2, date);
+            pstmt.setString(3, time);
+            pstmt.setString(4, notes);
+            pstmt.setInt(5, id);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+    </section>
+
+    <section>
+      <h2>Code for DatabaseAppointment.java</h2>
+      <pre><code>public class DatabaseAppointment {
+    private int id;
+    private String name;
+    private String date;
+    private String time;
+    private String notes;
+
+    public DatabaseAppointment(int id, String name, String date, String time, String notes) {
+        this.id = id;
+        this.name = name;
+        this.date = date;
+        this.time = time;
+        this.notes = notes;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    @Override
+    public String toString() {
+        return date + " " + time + " - " + name;
+    }
+}
+</code></pre>
+    </section>
+
+    <section>
+      <h2>Artifact Narrative</h2>
+
+      <p><strong>Briefly describe the artifact. What is it? When was it created?</strong></p>
+      <p>The artifact is an appointment management system that I created in CS-320, software testing automation and quality assurance. I created it for a project for that class, and it was a terminal based java application that allows users to add, view, and delete appointments. For this most recent enhancement, I have updated it to include a database for storing appointment information. It now includes database support and a search feature that works with the database to manage appointments easily as they scale. </p>
+
+      <p><strong>Why did you include this in your ePortfolio? What does it showcase?</strong></p>
+      <p>I chose this artifact for my ePortfolio because it shows a transition from console-based logic to a more professional desktop application. With the addition of the database using SQLite, I can showcase to potential employers my ability to integrate software parts into a working application for real world use. This enhancement demonstrates my abilities in database integration as well as user focused functionality application planning. </p>
+
+      <p><strong>Did you meet the course outcomes you planned to meet? Any updates?</strong></p>
+      <p>Yes, I believe I have met the outcomes I set out to achieve in module one as well as exceeding them. I applied software development fundamentals to integrate the database such as SQLite and the required drivers. I also designed modular functions for UI and database logic in a clean and professional way. I also incorporated error handling as well. This enhancement has expanded my software skills, especially with data handling. Some updates I have planned are to add a recurring appointment as it’s common to have weekly or biweekly appointments for things like chiropractor or physical therapy. Additionally, an appointment tracking system would be helpful where there could be a status of scheduled, completed, canceled, or no show, and these could be color coded for easy viewing for the user. </p>
+
+      <p><strong>What did you learn during this enhancement? What were the challenges?</strong></p>
+      <p>This enhancement required me to replace the original method of data storage with a database which meant I had to make some architectural changes to the project. I designed a database helper class to separate the database logic from the user interface logic. I did run into a lot of challenges for this enhancement, and it took significantly longer to achieve a good outcome than previous enhancements. First, I ran into issues with incorporating SQLite into the program, as I had only worked with SQLite a few other times and it was always on a virtual server with all the required drivers installed. It took me some time to properly install the java database connection driver to get SQLite working. Then I had to resolve some file name and compilation issues that was caused by me creating duplicates of classes unintentionally. Deleting the duplicates resolved this issue once I figured out that was the problem. This part of my artifact enhancement has given me more skills in troubleshooting build time and run time errors and taught me how important file structure is and how easily it can get messy and confusing if not properly maintained. </p>
+
+    </section>
+
+    <section>
+      <h2>Project Files</h2>
+      <p><strong>Full Source Code:</strong> <a href="files/artifact3-code.zip">Download Source Code</a></p>
+      <p><strong>Artifact Narrative:</strong> <a href="files/Artifact3_Narrative.docx">Download Word Document</a></p>
+      <p><strong>Original Code Repository:</strong> <a href="https://github.com/ally-miller/Software-Test-Automation-and-QA" target="_blank">View on GitHub</a></p>
+      <p><strong>Original Code Review:</strong> <a href="code-review.html">View Code Review</a></p>
+    </section>
+
+    <footer>
+      <p>Ally Miller 2025</p>
+    </footer>
+  </main>
+</body>
+</html>
