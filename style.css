@@ -76,11 +76,14 @@ img {
 
 
 pre {
-  background-color: #eaeaea;
-  padding: 10px;
+  background-color: #272822;
+  color: #f8f8f2;
+  padding: 15px;
   overflow-x: auto;
   border-radius: 5px;
+  font-size: 14px;
   text-align: left;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 code {
