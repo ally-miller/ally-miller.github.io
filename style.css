@@ -3,12 +3,10 @@ body {
   font-family: 'Roboto', sans-serif;
   margin: 0;
   padding: 20px;
-  background-color: #1e1f26;
+  background-color: #3a3f4b; 
   color: #f0f0f0; 
   text-align: center;
 }
-
-
 
 main {
   display: flex;
@@ -17,14 +15,13 @@ main {
   align-items: center;
 }
 
-
 header, footer {
-  background-color: #2c3e50;
+  background-color: #2c3e50; 
   padding: 40px 20px;
   color: white;
   text-align: center;
   width: 100%;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 
@@ -46,11 +43,10 @@ a:hover {
   text-decoration: underline;
 }
 
-
 section {
   max-width: 900px;
   margin: 0 auto 40px auto;
-  background: #2a2c37; 
+  background: #4b5261;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0px 2px 5px rgba(0,0,0,0.3);
@@ -68,16 +64,14 @@ section h2 {
   letter-spacing: 0.5px;
 }
 
-
 img {
   display: block;
   margin: 20px auto;
   max-width: 100%;
   height: auto;
-  border: 1px solid #444;
+  border: 1px solid #555;
   border-radius: 4px;
 }
-
 
 a {
   color: #4aa5f0;
