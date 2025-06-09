@@ -1,1 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Code Review</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+
+    <header>
+      <h1>Code Review</h1>
+      <a href="index.html">&larr; Back to Home</a>
+    </header>
+
+    <section>
+      <h2>Video Walkthrough</h2>
+      <p>This code review covers the original source files used in the development of all three enhancements. It explains the initial state of the code and the plan for modifications.</p>
+
+      <div style="text-align: center;">
+        <video width="640" height="360" controls>
+          <source src="files/code-review.mp4" type="video/mp4">
+        </video>
+      </div>
+    </section>
+
+    <footer>
+      <p>Ally Miller 2025</p>
+    </footer>
+
+  </main>
+</body>
+</html>
 
