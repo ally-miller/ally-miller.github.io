@@ -56,6 +56,12 @@ section {
   text-align: left;
 }
 
+section h2 {
+  border-bottom: 2px solid #3c8dbc;
+  padding-bottom: 5px;
+  margin-bottom: 15px;
+  color: #2c3e50;
+}
 
 img {
   display: block;
