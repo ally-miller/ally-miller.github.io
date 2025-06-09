@@ -81,9 +81,12 @@ video {
 }
 
 p {
-  text-indent: 2em;
-  margin-bottom: 1em;
+  line-height: 2; 
+  text-indent: 2em; 
+  margin-bottom: 1em; 
+  text-align: left; 
 }
+
 
 pre {
   background-color: #272822;
