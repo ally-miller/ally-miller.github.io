@@ -99,3 +99,23 @@ pre {
 code {
   font-family: Consolas, monospace;
 }
+
+body, header, nav, footer, section {
+  text-align: center;
+}
+
+img, video, iframe {
+  display: block;
+  margin: 0 auto;
+}
+
+nav ul {
+  padding: 0;
+  list-style-type: none;
+}
+
+nav ul li {
+  display: inline-block;
+  margin: 0 15px;
+}
+
