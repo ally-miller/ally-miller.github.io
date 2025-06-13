@@ -1,8 +1,8 @@
 body {
   font-family: 'Roboto', sans-serif;
-  background-color:#d3d3d3;
+  background-color: #d3d3d3; /* Updated to darker gray */
   color: #1f2d3d;
-  text-align: center;
+  text-align: center; /* Center all inline text */
   margin: 0;
   padding: 20px;
 }
@@ -25,26 +25,20 @@ header, footer {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-nav {
-  background-color: #f5f5f0; /* Optional: matches background */
-  max-width: 900px;
-  margin: 0 auto 40px auto;
-  text-align: center;
-  border-radius: 8px;
-}
-
 nav ul {
   list-style-type: none;
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
 }
 
 nav ul li {
+  margin: 10px 0;
+  text-align: center; 
+}
+
+nav {
+  max-width: 900px;
+  margin: 0 auto 40px auto; 
   text-align: center;
-  width: 100%;
 }
 
 a {
@@ -59,10 +53,10 @@ a:hover {
 section {
   max-width: 900px;
   margin: 0 auto 40px auto;
-  text-align: center;
+  text-align: center; 
 }
 
 img, video, iframe {
   display: block;
-  margin: 0 auto;
+  margin: 0 auto; 
 }
