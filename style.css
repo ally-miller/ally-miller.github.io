@@ -76,8 +76,7 @@ img, video, iframe {
 section pre, section code {
   max-width: 100%;
   overflow-x: auto;
-  white-space: pre-wrap;
-  word-wrap: break-word;
+  white-space: pre; /* preserve line breaks and indentation */
   font-family: 'Courier New', monospace;
   background-color: #f4f4f4;
   padding: 15px;
