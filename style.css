@@ -73,7 +73,7 @@ img, video, iframe {
   margin: 0 auto;
 }
 
-/* FIX: Prevent code blocks from overflowing or breaking layout */
+
 section pre {
   overflow-x: auto;
   background-color: #f4f4f4;
